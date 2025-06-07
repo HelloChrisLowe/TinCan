@@ -4,17 +4,17 @@ import java.util.*
 
 class GameRandom {
     companion object : Random() {
-        fun nextInt(from: Int, to: Int): Int {
+        override fun nextInt(from: Int, to: Int): Int {
             val difference = to - from
             return from + nextInt(difference)
         }
 
-        fun nextFloat(from: Float, to: Float): Float {
+        override fun nextFloat(from: Float, to: Float): Float {
             val difference = to - from
             return from + difference * nextFloat()
         }
 
-        fun nextDouble(from: Double, to: Double): Double {
+        override fun nextDouble(from: Double, to: Double): Double {
             val difference = to - from
             return from + difference * nextDouble()
         }

@@ -1,10 +1,18 @@
 apply plugin: "kotlin"
 
-sourceCompatibility = 1.6
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8 // Good practice
+sourceSets.main.java.srcDirs = [ "src/" ] // Assuming Kotlin sources are here too
 
 project.ext.mainClassName = "io.chrislowe.tincan.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../android/assets");
+
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+tasks.withType(KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
 
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
@@ -24,9 +32,9 @@ task debug(dependsOn: classes, type: JavaExec) {
 }
 
 task dist(type: Jar) {
-    from files(sourceSets.main.output.classesDir)
-    from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
+    from sourceSets.main.output.classesDirs
+    from sourceSets.main.output.resourcesDir
+    from {configurations.implementation.collect {zipTree(it)}}
     from files(project.assetsDir);
  
     manifest {
@@ -35,21 +43,3 @@ task dist(type: Jar) {
 }
 
 dist.dependsOn classes
-
-eclipse {
-    project {
-        name = appName + "-desktop"
-        linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/android/assets'
-    }
-}
-
-task afterEclipseImport(description: "Post processing after project generation", group: "IDE") {
-  doLast {
-    def classpath = new XmlParser().parse(file(".classpath"))
-    new Node(classpath, "classpathentry", [ kind: 'src', path: 'assets' ]);
-    def writer = new FileWriter(file(".classpath"))
-    def printer = new XmlNodePrinter(new PrintWriter(writer))
-    printer.setPreserveWhitespace(true)
-    printer.print(classpath)
-  }
-}

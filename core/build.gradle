@@ -1,11 +1,14 @@
 apply plugin: "kotlin"
 
-sourceCompatibility = 1.6
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8 // Good practice to set targetCompatibility as well
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = [ "src/" ] // Assuming Kotlin sources are here too for this project
 
-
-eclipse.project {
-    name = appName + "-core"
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+tasks.withType(KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
