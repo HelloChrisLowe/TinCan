@@ -10,8 +10,8 @@ class Spawner : GameObject() {
         TRIPLE(12)
     }
 
-    private val verticalRange = TinCanGame.gameHeight / 6
-    private val horizontalRange = TinCanGame.gameWidth / 6
+    private val verticalRange = TinCanGame.GAME_HEIGHT / 6
+    private val horizontalRange = TinCanGame.GAME_WIDTH / 6
 
     private val upperBoundTicks = 180
     private val lowerBoundTicks = 60
@@ -61,8 +61,8 @@ class Spawner : GameObject() {
 
     private fun spawnRightCan() {
         val can = Can()
-        can.sprite.x = TinCanGame.gameWidth
-        can.sprite.y = (TinCanGame.gameHeight / 2).plusOrMinus(verticalRange)
+        can.sprite.x = TinCanGame.GAME_WIDTH
+        can.sprite.y = (TinCanGame.GAME_HEIGHT / 2).plusOrMinus(verticalRange)
         can.xVel = (-800f).plusOrMinus(150f)
         can.yVel = 600f
         Director.gameObjects.add(can)
@@ -71,7 +71,7 @@ class Spawner : GameObject() {
     private fun spawnLeftCan() {
         val can = Can()
         can.sprite.x = -can.sprite.width
-        can.sprite.y = (TinCanGame.gameHeight / 2).plusOrMinus(verticalRange)
+        can.sprite.y = (TinCanGame.GAME_HEIGHT / 2).plusOrMinus(verticalRange)
         can.xVel = 800f.plusOrMinus(150f)
         can.yVel = 600f
         Director.gameObjects.add(can)
@@ -79,8 +79,8 @@ class Spawner : GameObject() {
 
     private fun spawnUpperCan() {
         val can = Can()
-        can.sprite.x = (TinCanGame.gameWidth / 2).plusOrMinus(horizontalRange)
-        can.sprite.y = TinCanGame.gameHeight + can.sprite.height
+        can.sprite.x = (TinCanGame.GAME_WIDTH / 2).plusOrMinus(horizontalRange)
+        can.sprite.y = TinCanGame.GAME_HEIGHT + can.sprite.height
         can.xVel = 0f
         can.yVel = 0f
         Director.gameObjects.add(can)

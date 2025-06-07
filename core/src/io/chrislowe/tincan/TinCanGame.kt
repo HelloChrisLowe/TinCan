@@ -10,9 +10,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 class TinCanGame(platformStoredData: StoredData) : ApplicationAdapter() {
     companion object {
-        const val fps = 60
-        const val gameWidth = 720f
-        const val gameHeight = 1280f
+        const val FPS = 60
+        const val GAME_WIDTH = 720f
+        const val GAME_HEIGHT = 1280f
         lateinit var storedData: StoredData
         lateinit var textFont: BitmapFont
     }
@@ -20,7 +20,7 @@ class TinCanGame(platformStoredData: StoredData) : ApplicationAdapter() {
     private lateinit var camera: OrthographicCamera
     private lateinit var batch: SpriteBatch
 
-    private val frameLifetime = 1000L / fps
+    private val frameLifetime = 1000L / FPS
     private var nextUpdate = 0L
 
     init {
@@ -29,7 +29,7 @@ class TinCanGame(platformStoredData: StoredData) : ApplicationAdapter() {
 
     override fun create() {
         camera = OrthographicCamera()
-        camera.setToOrtho(false, gameWidth, gameHeight)
+        camera.setToOrtho(false, GAME_WIDTH, GAME_HEIGHT)
         camera.update()
 
         batch = SpriteBatch()
@@ -39,11 +39,11 @@ class TinCanGame(platformStoredData: StoredData) : ApplicationAdapter() {
 
         Gdx.input.inputProcessor = object : InputAdapter() {
             override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-                val scaleX = gameWidth / Gdx.app.graphics.width
-                val scaleY = gameHeight / Gdx.app.graphics.height
+                val scaleX = GAME_WIDTH / Gdx.app.graphics.width
+                val scaleY = GAME_HEIGHT / Gdx.app.graphics.height
 
                 val touchX = screenX * scaleX
-                val touchY = gameHeight - (screenY * scaleY)
+                val touchY = GAME_HEIGHT - (screenY * scaleY)
 
                 println("ScaleX: $scaleX, ScaleY: $scaleY")
                 println("TouchX: $touchX, TouchY: $touchY")

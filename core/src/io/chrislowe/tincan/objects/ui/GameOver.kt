@@ -15,7 +15,7 @@ class GameOver : GameObject() {
         GameBackground.shakeTimer = selfShakeTimer
 
         setTexture("gameover.png")
-        sprite.setScale((TinCanGame.gameWidth / sprite.width) * 0.85f)
+        sprite.setScale((TinCanGame.GAME_WIDTH / sprite.width) * 0.85f)
 
         selfCenter()
     }
@@ -38,7 +38,7 @@ class GameOver : GameObject() {
             Director.changeGameState(Director.GameState.MENU)
 
     private fun selfCenter() {
-        sprite.x = TinCanGame.gameWidth / 2f - sprite.width / 2f
-        sprite.y = TinCanGame.gameHeight * (2 / 3f)
+        sprite.x = TinCanGame.GAME_WIDTH / 2f - sprite.width / 2f
+        sprite.y = TinCanGame.GAME_HEIGHT * (2 / 3f)
     }
 }

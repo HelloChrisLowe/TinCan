@@ -14,8 +14,8 @@ class StartCan : GameObject() {
     init {
         setTexture("can0.png")
 
-        sprite.x = TinCanGame.gameWidth / 2f - sprite.width / 2f
-        sprite.y = TinCanGame.gameHeight / 2f
+        sprite.x = TinCanGame.GAME_WIDTH / 2f - sprite.width / 2f
+        sprite.y = TinCanGame.GAME_HEIGHT / 2f
     }
 
     override fun update() {
@@ -23,8 +23,8 @@ class StartCan : GameObject() {
 
         ticksAlive++
 
-        val screenMiddle = TinCanGame.gameWidth / 2f - sprite.width / 2f
-        val fps = TinCanGame.fps.toFloat()
+        val screenMiddle = TinCanGame.GAME_WIDTH / 2f - sprite.width / 2f
+        val fps = TinCanGame.FPS.toFloat()
         val sinePosition = sin(Math.PI * (ticksAlive / fps)).toFloat()
 
         sprite.x = screenMiddle + sinePosition * bobAmount

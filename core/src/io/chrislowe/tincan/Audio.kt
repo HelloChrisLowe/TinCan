@@ -29,7 +29,7 @@ object Audio {
 
     private var currentlyPlaying: Music? = null
     private var lastPlaying: Music? = null
-    private val crossFadeRate = .05f
+    private const val CROSS_FADE_RATE = .05f
     private var crossFade = 1f
 
     fun init() {
@@ -66,14 +66,12 @@ object Audio {
     }
 
     fun pauseMusic() {
-        println("BEFORE Curr ${currentlyPlaying?.volume} Last ${lastPlaying?.volume}")
         currentlyPlaying?.pause()
         lastPlaying?.pause()
-        println("AFTER Curr ${currentlyPlaying?.volume} Last ${lastPlaying?.volume}")
     }
 
     fun updateAudio() {
-        crossFade -= crossFadeRate
+        crossFade -= CROSS_FADE_RATE
         if (crossFade < 0f) crossFade = 0f
 
         currentlyPlaying?.volume = 1f - crossFade
@@ -91,7 +89,7 @@ object Audio {
         val file = Gdx.files.internal(filename)
         val sound = Gdx.audio.newSound(file)
 
-        val list = soundBank.getOrDefault(tag, mutableListOf())
+        val list = soundBank[tag] ?: mutableListOf()
         list.add(sound)
         soundBank[tag] = list
     }

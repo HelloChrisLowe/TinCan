@@ -23,7 +23,7 @@ Thank you for your interest. **Tin Can** is written in [Kotlin](https://kotlinla
 If you'd like to contribute, please fork the repository and use a feature
 branch. Pull requests are warmly welcome. Alternatively, let me know of any
 issues you face by filing a report in the project's
-[issue tracker](https://github.com/ChristianLowe/ThorsHammer/issues).
+[issue tracker](https://github.com/HelloChrisLowe/TinCan/issues).
 
 ## Credits and Licenses
 
@@ -54,7 +54,7 @@ http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL_web
 
 ### Software
 ```
-Copyright (c) 2018 Christian Lowe
+Copyright (c) 2018 Chris Lowe
 Released under the MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software
@@ -75,6 +75,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 ### Graphics and Sound Effects
 ```
-Copyright (c) 2018 Christian Lowe
+Copyright (c) 2018 Chris Lowe
 All rights reserved
 ```

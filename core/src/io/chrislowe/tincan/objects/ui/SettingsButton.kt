@@ -7,7 +7,7 @@ class SettingsButton : GameObject() {
     init {
         setTexture("settings.png")
 
-        sprite.x = TinCanGame.gameWidth / 2f - sprite.width / 2f
+        sprite.x = TinCanGame.GAME_WIDTH / 2f - sprite.width / 2f
         sprite.y = sprite.height * 2f
     }
 

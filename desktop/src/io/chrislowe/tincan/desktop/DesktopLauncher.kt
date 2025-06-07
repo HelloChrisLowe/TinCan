@@ -9,8 +9,8 @@ object DesktopLauncher {
     fun main(arg: Array<String>) {
         val config = LwjglApplicationConfiguration()
         config.title = "Tin Can"
-        config.width = TinCanGame.gameWidth.toInt()
-        config.height = TinCanGame.gameHeight.toInt()
+        config.width = TinCanGame.GAME_WIDTH.toInt()
+        config.height = TinCanGame.GAME_HEIGHT.toInt()
 
         LwjglApplication(TinCanGame(DesktopStoredData()), config)
     }

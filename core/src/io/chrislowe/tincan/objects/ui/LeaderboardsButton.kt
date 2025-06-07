@@ -7,7 +7,7 @@ class LeaderboardsButton : GameObject() {
     init {
         setTexture("leaderboards.png")
 
-        sprite.x = TinCanGame.gameWidth / 2f - sprite.width / 2f
+        sprite.x = TinCanGame.GAME_WIDTH / 2f - sprite.width / 2f
         sprite.y = 24f
     }
 

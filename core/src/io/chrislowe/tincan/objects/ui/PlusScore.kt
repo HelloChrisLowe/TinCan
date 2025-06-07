@@ -14,12 +14,12 @@ class PlusScore(bonus: Int) : GameObject() {
     private val label: Label
 
     init {
-        val xOffset = TinCanGame.gameWidth - GameRandom.nextInt(80, 140)
-        val yOffset = TinCanGame.gameHeight - GameRandom.nextInt(100, 140)
+        val xOffset = TinCanGame.GAME_WIDTH - GameRandom.nextInt(80, 140)
+        val yOffset = TinCanGame.GAME_HEIGHT - GameRandom.nextInt(100, 140)
 
         val labelStyle = Label.LabelStyle(TinCanGame.textFont, Color.WHITE)
         label = Label(text, labelStyle)
-        label.setSize(TinCanGame.gameWidth, label.height)
+        label.setSize(TinCanGame.GAME_WIDTH, label.height)
         label.setPosition(xOffset, yOffset)
 
         ticksUntilDestruction = 30
@@ -30,7 +30,7 @@ class PlusScore(bonus: Int) : GameObject() {
     override fun update() {
         super.update()
 
-        label.y += 50f / TinCanGame.fps
+        label.y += 50f / TinCanGame.FPS
     }
 
     override fun draw(batch: SpriteBatch) {

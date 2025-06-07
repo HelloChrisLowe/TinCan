@@ -67,7 +67,7 @@ class Can : GameObject(), Pool.Poolable {
         if (rotationVel < -200f)
             rotationVel = -200f
 
-        if (sprite.x > TinCanGame.gameWidth - sprite.width && xVel > 0)
+        if (sprite.x > TinCanGame.GAME_WIDTH - sprite.width && xVel > 0)
             borderCan()
 
         if (sprite.x < 0 && xVel < 0)
@@ -80,8 +80,8 @@ class Can : GameObject(), Pool.Poolable {
     override fun draw(batch: SpriteBatch) {
         super.draw(batch)
 
-        if (sprite.y > TinCanGame.gameHeight) {
-            arrowLabel.setPosition(sprite.x, TinCanGame.gameHeight - 48)
+        if (sprite.y > TinCanGame.GAME_HEIGHT) {
+            arrowLabel.setPosition(sprite.x, TinCanGame.GAME_HEIGHT - 48)
             arrowLabel.draw(batch, 1f)
         }
     }
@@ -104,7 +104,7 @@ class Can : GameObject(), Pool.Poolable {
         GameBackground.blindTimer = 3
 
         val newObjects = ArrayList<GameObject>(particleCount + 2)
-        (1..particleCount).forEach {
+        (1..particleCount).forEach { _ ->
             val debris = Debris()
             debris.jumpToObject(this)
             debris.sprite.x += GameRandom.nextFloat(0f, sprite.width)
@@ -127,7 +127,7 @@ class Can : GameObject(), Pool.Poolable {
         Audio.playSound(Audio.SoundTag.HIT)
 
         val newObjects = ArrayList<GameObject>(particleCount + 1)
-        (1..particleCount).forEach {
+        (1..particleCount).forEach { _ ->
             val spark = Spark()
             spark.sprite.x = hitX
             spark.sprite.y = hitY

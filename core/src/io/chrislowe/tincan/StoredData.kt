@@ -2,10 +2,10 @@ package io.chrislowe.tincan
 
 abstract class StoredData {
     companion object {
-        const val highScoreKey = "highScore"
-        const val tutorialIconKey = "showTutorialIcon"
-        const val musicVolumeKey = "musicVolume"
-        const val sfxVolumeKey = "sfxVolume"
+        const val HIGH_SCORE_KEY = "highScore"
+        const val TUTORIAL_ICON_KEY = "showTutorialIcon"
+        const val MUSIC_VOLUME_KEY = "musicVolume"
+        const val SFX_VOLUME_KEY = "sfxVolume"
     }
 
     abstract fun getLeaderboardKey(): String

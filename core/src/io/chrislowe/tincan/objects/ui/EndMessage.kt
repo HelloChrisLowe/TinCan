@@ -13,9 +13,9 @@ class EndMessage(hasHighScore: Boolean) : GameObject() {
         val imageName = if (hasHighScore) "congrats.png" else "tryagain.png"
         setTexture(imageName)
 
-        sprite.setScale((TinCanGame.gameWidth / sprite.width) * 0.85f)
-        sprite.x = TinCanGame.gameWidth / 2f - sprite.width / 2f
-        sprite.y = 2f * (TinCanGame.gameHeight - sprite.height) / 3f
+        sprite.setScale((TinCanGame.GAME_WIDTH / sprite.width) * 0.85f)
+        sprite.x = TinCanGame.GAME_WIDTH / 2f - sprite.width / 2f
+        sprite.y = 2f * (TinCanGame.GAME_HEIGHT - sprite.height) / 3f
     }
 
     override fun update() {
@@ -23,8 +23,8 @@ class EndMessage(hasHighScore: Boolean) : GameObject() {
 
         ticksAlive++
 
-        val screenMiddle = TinCanGame.gameHeight / 3f
-        val fps = TinCanGame.fps.toFloat()
+        val screenMiddle = TinCanGame.GAME_HEIGHT / 3f
+        val fps = TinCanGame.FPS.toFloat()
         val sinePosition = sin(Math.PI * (ticksAlive / fps)).toFloat()
 
         sprite.y = screenMiddle + sinePosition * bobAmount

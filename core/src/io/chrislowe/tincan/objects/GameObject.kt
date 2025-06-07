@@ -9,7 +9,7 @@ import io.chrislowe.tincan.TinCanGame
 
 abstract class GameObject {
     companion object {
-        const val touchBuffer = 32
+        const val TOUCH_BUFFER = 32
     }
 
     var sprite: Sprite = Sprite()
@@ -23,7 +23,7 @@ abstract class GameObject {
     var ticksUntilDestruction = -1
 
     open fun update() {
-        val fps = TinCanGame.fps.toFloat()
+        val fps = TinCanGame.FPS.toFloat()
 
         sprite.x += xVel / fps
         sprite.y += yVel / fps
@@ -49,10 +49,10 @@ abstract class GameObject {
     open fun touch(touchX: Float, touchY: Float) {}
 
     open fun isTouched(touchX: Float, touchY: Float) =
-                touchX > centerX() - sprite.width - touchBuffer &&
-                touchX < centerX() + sprite.width + touchBuffer &&
-                touchY > centerY() - sprite.height - touchBuffer &&
-                touchY < centerY() + sprite.height + touchBuffer
+                touchX > centerX() - sprite.width - TOUCH_BUFFER &&
+                touchX < centerX() + sprite.width + TOUCH_BUFFER &&
+                touchY > centerY() - sprite.height - TOUCH_BUFFER &&
+                touchY < centerY() + sprite.height + TOUCH_BUFFER
 
     fun jumpToObject(other: GameObject) {
         sprite.x = other.sprite.x
