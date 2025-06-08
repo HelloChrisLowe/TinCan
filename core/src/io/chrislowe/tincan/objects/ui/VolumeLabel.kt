@@ -10,19 +10,16 @@ import io.chrislowe.tincan.objects.GameObject
 class VolumeLabel(text: String, yPosition: Float, xPosition: Float = TinCanGame.GAME_WIDTH / 2f, width: Float = 300f, alignment: Int = Align.center) : GameObject() {
 
     private val labelStyle = Label.LabelStyle(TinCanGame.textFont, Color.WHITE)
-    private val label: Label
+    private val label: Label // Keep this private
 
     init {
         label = Label(text, labelStyle)
-        label.setSize(width, label.height) // Width can be adjusted
+        label.setSize(width, label.height)
         label.setAlignment(alignment)
-        // GameObject's sprite position is usually its bottom-left. Label's position is also bottom-left.
-        // If xPosition is center, we need to adjust.
+
         val actualX = if (alignment == Align.center) xPosition - width / 2f else xPosition
         label.setPosition(actualX, yPosition)
 
-        // Set GameObject's sprite properties if needed for touch detection or dimensions, though this is a display-only object.
-        // For simplicity, we'll make its bounds match the label.
         sprite.x = label.x
         sprite.y = label.y
         sprite.setSize(label.width, label.height)
@@ -30,5 +27,29 @@ class VolumeLabel(text: String, yPosition: Float, xPosition: Float = TinCanGame.
 
     override fun draw(batch: SpriteBatch) {
         label.draw(batch, 1f)
+    }
+
+    fun setFontScale(scale: Float) {
+        label.setFontScale(scale)
+    }
+
+    // Method to apply scaling and then re-center based on new preferred width
+    fun setFontScaleAndRecenter(scale: Float, originalXCenter: Float, originalYPos: Float) {
+        label.setFontScale(scale)
+        // Get new preferred dimensions after scaling
+        val newPrefWidth = label.prefWidth
+        val newPrefHeight = label.prefHeight
+
+        label.setSize(newPrefWidth, newPrefHeight) // Update label size
+
+        // Recalculate X for centering
+        val actualX = if (label.labelAlign == Align.center) originalXCenter - newPrefWidth / 2f else originalXCenter
+        label.setPosition(actualX, originalYPos)
+
+        // Update sprite bounds to match new label dimensions
+        sprite.x = label.x
+        sprite.y = label.y
+        sprite.width = newPrefWidth
+        sprite.height = newPrefHeight
     }
 }

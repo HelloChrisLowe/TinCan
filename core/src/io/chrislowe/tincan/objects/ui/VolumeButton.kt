@@ -1,10 +1,22 @@
 package io.chrislowe.tincan.objects.ui
 
+enum class VolumeTarget {
+    SFX,
+    MUSIC
+}
+
+enum class VolumeDirection {
+    UP,
+    DOWN
+}
+
+import com.badlogic.gdx.Gdx // For Gdx.files.internal
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Texture // For whitePixelTexture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
-import io.chrislowe.tincan.Audio // Required for Audio.updateMusicVolume()
+import io.chrislowe.tincan.Audio
 import io.chrislowe.tincan.Director
 import io.chrislowe.tincan.TinCanGame
 import io.chrislowe.tincan.objects.GameObject
@@ -14,21 +26,23 @@ class VolumeButton(
     val direction: VolumeDirection,
     yPosition: Float,
     xPosition: Float,
-    val buttonText: String // Made buttonText a property to check for "Back"
+    val buttonText: String
 ) : GameObject() {
 
-    private val labelStyle = Label.LabelStyle(TinCanGame.textFont, Color.WHITE)
+    private val whitePixelTexture: Texture
+    private val blackTextStyle = Label.LabelStyle(TinCanGame.textFont, Color.BLACK) // New style for black text
     private val label: Label
     private var buttonWidth = 80f
     private var buttonHeight = 80f
 
     init {
-        // Adjust width for "Back" button text
-        if (buttonText == "Back") {
-            buttonWidth = 150f
+        whitePixelTexture = Texture(Gdx.files.internal("white.png"))
+
+        if (buttonText == "Back" || buttonText == "⬅ Back") {
+            buttonWidth = 200f
         }
 
-        label = Label(buttonText, labelStyle)
+        label = Label(buttonText, blackTextStyle)
         label.setSize(buttonWidth, buttonHeight)
         label.setAlignment(Align.center)
         label.setPosition(xPosition - buttonWidth / 2f, yPosition - buttonHeight / 2f)
@@ -40,12 +54,20 @@ class VolumeButton(
     }
 
     override fun draw(batch: SpriteBatch) {
+        val oldColor = batch.color.cpy()
+
+        batch.color = Color.WHITE
+        batch.draw(whitePixelTexture, sprite.x, sprite.y, sprite.width, sprite.height)
+
+        batch.color = oldColor
+
         label.draw(batch, 1f)
     }
 
     override fun touch(touchX: Float, touchY: Float) {
-        if (buttonText == "Back") {
+        if (buttonText == "Back" || buttonText == "⬅ Back") {
             Director.showSettingsUI(false)
+            Audio.playSound(Audio.SoundTag.HIT)
             return
         }
 
@@ -61,8 +83,7 @@ class VolumeButton(
             }
             TinCanGame.storedData.setSfxVolume(newVolume)
             Director.updateVolumeDisplay(VolumeTarget.SFX, newVolume)
-            // Optionally play a sound effect for button press
-            // Audio.playSound(Audio.SoundTag.HIT, 0.5f) // Example
+            Audio.playSound(Audio.SoundTag.HIT)
         } else { // MUSIC
             currentVolume = TinCanGame.storedData.getMusicVolume()
             newVolume = if (direction == VolumeDirection.UP) {
@@ -73,7 +94,7 @@ class VolumeButton(
             TinCanGame.storedData.setMusicVolume(newVolume)
             Director.updateVolumeDisplay(VolumeTarget.MUSIC, newVolume)
             Audio.updateMusicVolume() // Apply music volume change immediately
+            Audio.playSound(Audio.SoundTag.HIT)
         }
-        println("Volume changed: ${target} to ${newVolume}%") // For debugging
     }
 }

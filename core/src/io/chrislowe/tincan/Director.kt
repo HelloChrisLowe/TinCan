@@ -42,7 +42,7 @@ object Director {
     private lateinit var backButton: VolumeButton
 
     init {
-        initSettingsUI() // Add this line
+        initSettingsUI()
         changeGameState(GameState.MENU)
     }
 
@@ -52,30 +52,27 @@ object Director {
         val centerX = screenWidth / 2f
 
         settingsTitle = VolumeLabel("Settings", screenHeight * 0.85f, xPosition = centerX, alignment = Align.center)
+        settingsTitle.setFontScaleAndRecenter(1.5f, centerX, screenHeight * 0.85f)
 
-        // SFX Volume UI
         sfxVolumeLabel = VolumeLabel("SFX Volume", screenHeight * 0.75f, xPosition = centerX, alignment = Align.center)
         sfxVolumeDisplay = VolumeDisplay(TinCanGame.storedData.getSfxVolume(), screenHeight * 0.70f, xPosition = centerX)
         sfxVolumeDownButton = VolumeButton(VolumeTarget.SFX, VolumeDirection.DOWN, screenHeight * 0.70f, centerX - 120f, "-")
         sfxVolumeUpButton = VolumeButton(VolumeTarget.SFX, VolumeDirection.UP, screenHeight * 0.70f, centerX + 120f, "+")
 
-        // Music Volume UI
         musicVolumeLabel = VolumeLabel("Music Volume", screenHeight * 0.60f, xPosition = centerX, alignment = Align.center)
         musicVolumeDisplay = VolumeDisplay(TinCanGame.storedData.getMusicVolume(), screenHeight * 0.55f, xPosition = centerX)
         musicVolumeDownButton = VolumeButton(VolumeTarget.MUSIC, VolumeDirection.DOWN, screenHeight * 0.55f, centerX - 120f, "-")
         musicVolumeUpButton = VolumeButton(VolumeTarget.MUSIC, VolumeDirection.UP, screenHeight * 0.55f, centerX + 120f, "+")
 
-        // Back Button
-        // Using SFX and DOWN as dummy values for now as per instruction, will be handled by specific touch logic later
-        backButton = VolumeButton(VolumeTarget.SFX, VolumeDirection.DOWN, screenHeight * 0.25f, centerX, "Back")
+        backButton = VolumeButton(VolumeTarget.SFX, VolumeDirection.DOWN, screenHeight * 0.25f, centerX, "⬅ Back")
     }
 
     fun showSettingsUI(visible: Boolean) {
         settingsUIVisible = visible
-        gameObjects.clear() // Clear current game objects
+        gameObjects.clear() // Clear previous game objects before adding new ones
 
         if (visible) {
-            // Update displays with current values from StoredData
+            // Refresh volume displays with current values
             sfxVolumeDisplay.updateText(TinCanGame.storedData.getSfxVolume())
             musicVolumeDisplay.updateText(TinCanGame.storedData.getMusicVolume())
 
@@ -86,7 +83,7 @@ object Director {
                 backButton
             ))
         } else {
-            setupMenu() // Restore original menu items and handles music
+            setupMenu() // Revert to main menu UI
         }
     }
 
@@ -162,7 +159,7 @@ object Director {
         Audio.pauseMusic()
 
         val soundTag = if (hasHighScore) Audio.SoundTag.HIGHSCORE else Audio.SoundTag.GAMEOVER
-        Audio.playSound(soundTag, 1.0f) // Added default volumeScale
+        Audio.playSound(soundTag)
 
         for (gameObject in gameObjects) {
             when (gameObject) {
