@@ -1,8 +1,8 @@
 package io.chrislowe.tincan.objects.ui
 
-import io.chrislowe.tincan.Director // Ensure this import is present
 import io.chrislowe.tincan.TinCanGame
 import io.chrislowe.tincan.objects.GameObject
+import io.chrislowe.tincan.ui.SettingsManager
 
 class SettingsButton : GameObject() {
     init {
@@ -14,6 +14,6 @@ class SettingsButton : GameObject() {
     }
 
     override fun touch(touchX: Float, touchY: Float) {
-        Director.showSettingsUI(true) // Call Director to show the settings UI
+        SettingsManager.show(true) // Call SettingsManager to show the settings UI
     }
 }

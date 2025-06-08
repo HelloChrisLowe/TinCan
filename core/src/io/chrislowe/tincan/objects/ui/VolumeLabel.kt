@@ -10,7 +10,7 @@ import io.chrislowe.tincan.objects.GameObject
 class VolumeLabel(text: String, yPosition: Float, xPosition: Float = TinCanGame.GAME_WIDTH / 2f, width: Float = 300f, alignment: Int = Align.center) : GameObject() {
 
     private val labelStyle = Label.LabelStyle(TinCanGame.textFont, Color.WHITE)
-    private val label: Label // Keep this private
+    private val label: Label
 
     init {
         label = Label(text, labelStyle)
@@ -47,9 +47,7 @@ class VolumeLabel(text: String, yPosition: Float, xPosition: Float = TinCanGame.
         label.setPosition(actualX, originalYPos)
 
         // Update sprite bounds to match new label dimensions
-        sprite.x = label.x
-        sprite.y = label.y
-        sprite.width = newPrefWidth
-        sprite.height = newPrefHeight
+        sprite.setPosition(label.x, label.y)
+        sprite.setSize(newPrefWidth, newPrefHeight)
     }
 }
