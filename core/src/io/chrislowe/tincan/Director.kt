@@ -1,10 +1,16 @@
 package io.chrislowe.tincan
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.utils.Align
 import io.chrislowe.tincan.objects.GameObject
 import io.chrislowe.tincan.objects.game.Can
 import io.chrislowe.tincan.objects.game.Spawner
 import io.chrislowe.tincan.objects.ui.*
+import io.chrislowe.tincan.objects.ui.VolumeButton
+import io.chrislowe.tincan.objects.ui.VolumeDisplay
+import io.chrislowe.tincan.objects.ui.VolumeLabel
+import io.chrislowe.tincan.objects.ui.VolumeTarget
+import io.chrislowe.tincan.objects.ui.VolumeDirection
 import java.util.concurrent.CopyOnWriteArrayList
 
 object Director {
@@ -20,8 +26,75 @@ object Director {
 
     var hasHighScore = false
 
+    private var settingsUIVisible = false
+
+    private lateinit var settingsTitle: VolumeLabel
+    private lateinit var sfxVolumeLabel: VolumeLabel
+    private lateinit var sfxVolumeDisplay: VolumeDisplay
+    private lateinit var sfxVolumeUpButton: VolumeButton
+    private lateinit var sfxVolumeDownButton: VolumeButton
+
+    private lateinit var musicVolumeLabel: VolumeLabel
+    private lateinit var musicVolumeDisplay: VolumeDisplay
+    private lateinit var musicVolumeUpButton: VolumeButton
+    private lateinit var musicVolumeDownButton: VolumeButton
+
+    private lateinit var backButton: VolumeButton
+
     init {
+        initSettingsUI() // Add this line
         changeGameState(GameState.MENU)
+    }
+
+    private fun initSettingsUI() {
+        val screenWidth = TinCanGame.GAME_WIDTH
+        val screenHeight = TinCanGame.GAME_HEIGHT
+        val centerX = screenWidth / 2f
+
+        settingsTitle = VolumeLabel("Settings", screenHeight * 0.85f, xPosition = centerX, alignment = Align.center)
+
+        // SFX Volume UI
+        sfxVolumeLabel = VolumeLabel("SFX Volume", screenHeight * 0.75f, xPosition = centerX, alignment = Align.center)
+        sfxVolumeDisplay = VolumeDisplay(TinCanGame.storedData.getSfxVolume(), screenHeight * 0.70f, xPosition = centerX)
+        sfxVolumeDownButton = VolumeButton(VolumeTarget.SFX, VolumeDirection.DOWN, screenHeight * 0.70f, centerX - 120f, "-")
+        sfxVolumeUpButton = VolumeButton(VolumeTarget.SFX, VolumeDirection.UP, screenHeight * 0.70f, centerX + 120f, "+")
+
+        // Music Volume UI
+        musicVolumeLabel = VolumeLabel("Music Volume", screenHeight * 0.60f, xPosition = centerX, alignment = Align.center)
+        musicVolumeDisplay = VolumeDisplay(TinCanGame.storedData.getMusicVolume(), screenHeight * 0.55f, xPosition = centerX)
+        musicVolumeDownButton = VolumeButton(VolumeTarget.MUSIC, VolumeDirection.DOWN, screenHeight * 0.55f, centerX - 120f, "-")
+        musicVolumeUpButton = VolumeButton(VolumeTarget.MUSIC, VolumeDirection.UP, screenHeight * 0.55f, centerX + 120f, "+")
+
+        // Back Button
+        // Using SFX and DOWN as dummy values for now as per instruction, will be handled by specific touch logic later
+        backButton = VolumeButton(VolumeTarget.SFX, VolumeDirection.DOWN, screenHeight * 0.25f, centerX, "Back")
+    }
+
+    fun showSettingsUI(visible: Boolean) {
+        settingsUIVisible = visible
+        gameObjects.clear() // Clear current game objects
+
+        if (visible) {
+            // Update displays with current values from StoredData
+            sfxVolumeDisplay.updateText(TinCanGame.storedData.getSfxVolume())
+            musicVolumeDisplay.updateText(TinCanGame.storedData.getMusicVolume())
+
+            gameObjects.addAll(listOf(
+                settingsTitle,
+                sfxVolumeLabel, sfxVolumeDisplay, sfxVolumeDownButton, sfxVolumeUpButton,
+                musicVolumeLabel, musicVolumeDisplay, musicVolumeDownButton, musicVolumeUpButton,
+                backButton
+            ))
+        } else {
+            setupMenu() // Restore original menu items and handles music
+        }
+    }
+
+    fun updateVolumeDisplay(target: VolumeTarget, value: Int) {
+        when (target) {
+            VolumeTarget.SFX -> sfxVolumeDisplay.updateText(value)
+            VolumeTarget.MUSIC -> musicVolumeDisplay.updateText(value)
+        }
     }
 
     fun changeGameState(gameState: GameState) {
@@ -89,7 +162,7 @@ object Director {
         Audio.pauseMusic()
 
         val soundTag = if (hasHighScore) Audio.SoundTag.HIGHSCORE else Audio.SoundTag.GAMEOVER
-        Audio.playSound(soundTag)
+        Audio.playSound(soundTag, 1.0f) // Added default volumeScale
 
         for (gameObject in gameObjects) {
             when (gameObject) {
