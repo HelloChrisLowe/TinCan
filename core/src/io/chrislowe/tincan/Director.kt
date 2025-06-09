@@ -5,6 +5,7 @@ import io.chrislowe.tincan.objects.GameObject
 import io.chrislowe.tincan.objects.game.Can
 import io.chrislowe.tincan.objects.game.Spawner
 import io.chrislowe.tincan.objects.ui.*
+import io.chrislowe.tincan.ui.SettingsManager
 import java.util.concurrent.CopyOnWriteArrayList
 
 object Director {
@@ -21,6 +22,7 @@ object Director {
     var hasHighScore = false
 
     init {
+        SettingsManager.initialize()
         changeGameState(GameState.MENU)
     }
 
@@ -61,7 +63,7 @@ object Director {
         }
     }
 
-    private fun setupMenu() {
+    internal fun setupMenu() {
         Audio.playMusic(Audio.MusicTag.MENU)
 
         val startCan = StartCan()
