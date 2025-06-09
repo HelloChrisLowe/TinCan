@@ -3,10 +3,10 @@ package io.chrislowe.tincan.ui
 import com.badlogic.gdx.utils.Align
 import io.chrislowe.tincan.Director
 import io.chrislowe.tincan.TinCanGame
-import io.chrislowe.tincan.objects.ui.MenuButton // Changed import
+import io.chrislowe.tincan.objects.ui.MenuButton
 import io.chrislowe.tincan.objects.ui.VolumeDisplay
 import io.chrislowe.tincan.objects.ui.VolumeLabel
-import io.chrislowe.tincan.objects.ui.ButtonActionType // Import new Enum
+import io.chrislowe.tincan.objects.ui.ButtonActionType
 
 object SettingsManager {
     enum class VolumeTarget { SFX, MUSIC }
