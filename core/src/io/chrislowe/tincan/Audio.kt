@@ -54,15 +54,15 @@ object Audio {
 
     fun playMusic(tag: MusicTag) {
         val newMusic = musicBank[tag]!!
+        if (newMusic == currentlyPlaying) return
 
         lastPlaying?.volume = 0f
-
         lastPlaying = currentlyPlaying
         currentlyPlaying = newMusic
 
         crossFade = 1f
-        currentlyPlaying!!.volume = 0f
-        if (!currentlyPlaying!!.isPlaying) currentlyPlaying!!.play()
+        newMusic.volume = 0f
+        if (!newMusic.isPlaying) newMusic.play()
     }
 
     fun pauseMusic() {

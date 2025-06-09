@@ -9,22 +9,22 @@ import io.chrislowe.tincan.objects.ui.VolumeLabel
 import io.chrislowe.tincan.objects.ui.ButtonActionType // Import new Enum
 
 object SettingsManager {
-    public enum class VolumeTarget { SFX, MUSIC }
+    enum class VolumeTarget { SFX, MUSIC }
 
     private var settingsUIVisible = false
 
     private lateinit var settingsTitle: VolumeLabel
     private lateinit var sfxVolumeLabel: VolumeLabel
     private lateinit var sfxVolumeDisplay: VolumeDisplay
-    private lateinit var sfxVolumeUpButton: MenuButton // Changed type
-    private lateinit var sfxVolumeDownButton: MenuButton // Changed type
+    private lateinit var sfxVolumeUpButton: MenuButton
+    private lateinit var sfxVolumeDownButton: MenuButton
 
     private lateinit var musicVolumeLabel: VolumeLabel
     private lateinit var musicVolumeDisplay: VolumeDisplay
-    private lateinit var musicVolumeUpButton: MenuButton // Changed type
-    private lateinit var musicVolumeDownButton: MenuButton // Changed type
+    private lateinit var musicVolumeUpButton: MenuButton
+    private lateinit var musicVolumeDownButton: MenuButton
 
-    private lateinit var backButton: MenuButton // Changed type
+    private lateinit var backButton: MenuButton
 
     fun initialize() {
         val screenWidth = TinCanGame.GAME_WIDTH
@@ -44,7 +44,7 @@ object SettingsManager {
         musicVolumeDownButton = MenuButton(ButtonActionType.MUSIC_VOL_DOWN, screenHeight * 0.55f, centerX - 120f, "-")
         musicVolumeUpButton = MenuButton(ButtonActionType.MUSIC_VOL_UP, screenHeight * 0.55f, centerX + 120f, "+")
 
-        backButton = MenuButton(ButtonActionType.NAV_BACK, screenHeight * 0.25f, centerX, "⬅ Back")
+        backButton = MenuButton(ButtonActionType.NAV_BACK, screenHeight * 0.25f, centerX, "<- Back")
     }
 
     fun show(visible: Boolean) {
@@ -66,14 +66,10 @@ object SettingsManager {
         }
     }
 
-    fun updateVolumeDisplay(target: SettingsManager.VolumeTarget, value: Int) {
+    fun updateVolumeDisplay(target: VolumeTarget, value: Int) {
         when (target) {
-            SettingsManager.VolumeTarget.SFX -> sfxVolumeDisplay.updateText(value)
-            SettingsManager.VolumeTarget.MUSIC -> musicVolumeDisplay.updateText(value)
+            VolumeTarget.SFX -> sfxVolumeDisplay.updateText(value)
+            VolumeTarget.MUSIC -> musicVolumeDisplay.updateText(value)
         }
-    }
-
-    fun isSettingsUIVisible(): Boolean {
-        return settingsUIVisible
     }
 }

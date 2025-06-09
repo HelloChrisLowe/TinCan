@@ -1,14 +1,10 @@
 package io.chrislowe.tincan
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.utils.Align
 import io.chrislowe.tincan.objects.GameObject
 import io.chrislowe.tincan.objects.game.Can
 import io.chrislowe.tincan.objects.game.Spawner
 import io.chrislowe.tincan.objects.ui.*
-// VolumeButton was renamed to MenuButton and is not directly used by Director anymore
-import io.chrislowe.tincan.objects.ui.VolumeDisplay
-import io.chrislowe.tincan.objects.ui.VolumeLabel
 import io.chrislowe.tincan.ui.SettingsManager
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -21,7 +17,7 @@ object Director {
 
     var highScore = TinCanGame.storedData.currentHighScore()
     var gameScore = 0
-    val gameObjects = CopyOnWriteArrayList<GameObject>() // SettingsManager will add/remove from this list
+    val gameObjects = CopyOnWriteArrayList<GameObject>()
 
     var hasHighScore = false
 
