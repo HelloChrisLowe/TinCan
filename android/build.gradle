@@ -1,6 +1,6 @@
 android {
     namespace 'io.chrislowe.tincan'
-    compileSdkVersion 35
+    compileSdkVersion 35 // Ensure compileSdkVersion is 35
 
     buildFeatures {
         buildConfig true
@@ -29,7 +29,32 @@ android {
     }
 
     dependencies {
-        implementation "com.google.android.gms:play-services-games-v2:+"
+        implementation project(':core') // This was missing from the provided snippet, but is in the original file and essential
+        implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion" // This was missing from the provided snippet
+
+        // Remove: implementation "com.google.android.gms:play-services-games-v2:+"
+        // Add specific components:
+        implementation "com.google.android.gms:play-services-auth:21.1.0"
+        implementation "com.google.android.gms:play-services-games-v2:+" // Use + version
+
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a" // This was missing from the provided snippet
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86" // This was missing from the provided snippet
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64" // This was missing from the provided snippet
+        // Include other GDX dependencies that were in the original file but not in the snippet
+        implementation "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
+        natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
+        natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
+        natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
+        implementation "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
+        implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
+        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
+        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
+        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     }
 
     packagingOptions {
@@ -39,8 +64,8 @@ android {
     }
     defaultConfig {
         applicationId "io.chrislowe.tincan"
-        minSdkVersion 21
-        targetSdkVersion 35
+        minSdkVersion 21      // Ensure minSdk is 21
+        targetSdkVersion 35 // Ensure targetSdk is 35
         versionCode 1
         versionName "1.0"
     }

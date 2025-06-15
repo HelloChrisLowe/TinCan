@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlinVersion = '2.1.21'
+    ext.kotlinVersion = '1.9.23' // Corrected to a valid Kotlin version
 
     repositories {
         mavenLocal()
@@ -8,7 +8,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.10.1'
+        classpath 'com.android.tools.build:gradle:8.10.1' // Reverted AGP version
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
     }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import io.chrislowe.tincan.BuildConfig // Added import for BuildConfig
 import io.chrislowe.tincan.R
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
@@ -17,16 +18,15 @@ import io.chrislowe.tincan.PlayServices
 
 class AndroidLauncher : AndroidApplication(), PlayServices {
 
-    private lateinit var gamesSignInClient: GamesSignInClient
-    private lateinit var leaderboardsClient: LeaderboardsClient
+    // Member variables for clients removed as per instruction to always get fresh clients.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         PlayGames.initialize(this)
 
-        gamesSignInClient = PlayGames.getGamesSignInClient(this)
-        leaderboardsClient = PlayGames.getLeaderboardsClient(this)
+        // Clients are no longer stored in member variables here.
+        // They will be fetched from PlayGames.* directly when needed.
 
         val config = AndroidApplicationConfiguration()
         config.useAccelerometer = false
@@ -38,18 +38,32 @@ class AndroidLauncher : AndroidApplication(), PlayServices {
     }
 
     override fun signIn() {
-        gamesSignInClient.isAuthenticated.addOnCompleteListener { isAuthenticatedTask ->
+        PlayGames.getGamesSignInClient(this).isAuthenticated.addOnCompleteListener { isAuthenticatedTask ->
             val isAuthenticated = isAuthenticatedTask.isSuccessful && isAuthenticatedTask.result.isSignedIn
             if (isAuthenticated) {
-                Log.d("PlayServices", "Already signed in")
-            } else {
-                gamesSignInClient.signIn().addOnCompleteListener { signInTask ->
-                    if (signInTask.isSuccessful) {
-                        Log.d("PlayServices", "Sign-in successful")
+                Log.d("PlayServices", "Already signed in or auto-signed in")
+                // Check if silent sign-in was successful, otherwise prompt interactive sign-in
+                 PlayGames.getGamesSignInClient(this).signInSilently().addOnCompleteListener { silentSignInTask ->
+                    if (silentSignInTask.isSuccessful) {
+                        Log.d("PlayServices", "Silent sign-in successful.")
                     } else {
-                        Log.e("PlayServices", "Sign-in failed: ", signInTask.exception)
+                        Log.d("PlayServices", "Silent sign-in failed, attempting interactive sign-in.")
+                        interactiveSignIn()
                     }
                 }
+            } else {
+                Log.d("PlayServices", "Not authenticated, attempting interactive sign-in.")
+                interactiveSignIn()
+            }
+        }
+    }
+
+    private fun interactiveSignIn() {
+        PlayGames.getGamesSignInClient(this).signIn().addOnCompleteListener { signInTask ->
+            if (signInTask.isSuccessful) {
+                Log.d("PlayServices", "Interactive sign-in successful")
+            } else {
+                Log.e("PlayServices", "Interactive sign-in failed: ", signInTask.exception)
             }
         }
     }
@@ -59,20 +73,24 @@ class AndroidLauncher : AndroidApplication(), PlayServices {
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
-                val account = task.getResult(ApiException::class.java)
-                // Signed in successfully
-                Log.d("PlayServices", "Signed in successfully after activity result")
-                gamesSignInClient = PlayGames.getGamesSignInClient(this) // Re-initialize after sign-in
-                leaderboardsClient = PlayGames.getLeaderboardsClient(this) // Re-initialize after sign-in
+                task.getResult(ApiException::class.java)
+                // Signed in successfully via GoogleSignIn, now check Play Games layer
+                PlayGames.getGamesSignInClient(this).isAuthenticated.addOnCompleteListener { isAuthenticatedTask ->
+                    if (isAuthenticatedTask.isSuccessful && isAuthenticatedTask.result.isSignedIn) {
+                        Log.d("PlayServices", "Google Sign-In successful and Play Games authenticated.")
+                    } else {
+                        Log.w("PlayServices", "Google Sign-In successful BUT Play Games NOT authenticated.")
+                    }
+                }
             } catch (apiException: ApiException) {
                 // Sign in failed
-                Log.e("PlayServices", "Sign in failed after activity result: ", apiException)
+                Log.e("PlayServices", "Google Sign-In failed after activity result: ", apiException)
             }
         }
     }
 
     override fun signOut() {
-        gamesSignInClient.signOut().addOnCompleteListener { task ->
+        PlayGames.getGamesSignInClient(this).signOut().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Log.d("PlayServices", "Sign-out successful")
             } else {
@@ -82,13 +100,16 @@ class AndroidLauncher : AndroidApplication(), PlayServices {
     }
 
     override fun isSignedIn(): Boolean {
-        val isAuthenticatedTask = gamesSignInClient.isAuthenticated
-        return isAuthenticatedTask.isSuccessful && isAuthenticatedTask.result.isSignedIn
+        // This is a synchronous check which might not be perfectly accurate immediately after an async call.
+        // For v2, it's better to rely on the async results of isAuthenticated or signIn.
+        // However, to satisfy the interface, we'll do our best.
+        val authTask = PlayGames.getGamesSignInClient(this).isAuthenticated
+        return authTask.isComplete && authTask.isSuccessful && authTask.result.isSignedIn
     }
 
     override fun submitScore(score: Int) {
-        if (isSignedIn()) {
-            leaderboardsClient.submitScoreImmediate(getString(R.string.leaderboard_key), score.toLong())
+        if (isSignedIn()) { // It's good practice to check, though operations will often fail gracefully if not signed in.
+            PlayGames.getLeaderboardsClient(this).submitScoreImmediate(BuildConfig.leaderboardKey, score.toLong())
                 .addOnSuccessListener {
                     Log.d("PlayServices", "Score submitted successfully: $score")
                 }
@@ -101,8 +122,8 @@ class AndroidLauncher : AndroidApplication(), PlayServices {
     }
 
     override fun showLeaderboard() {
-        if (isSignedIn()) {
-            leaderboardsClient.getLeaderboardIntent(getString(R.string.leaderboard_key))
+        if (isSignedIn()) { // Good practice to check.
+            PlayGames.getLeaderboardsClient(this).getLeaderboardIntent(BuildConfig.leaderboardKey)
                 .addOnSuccessListener { intent ->
                     startActivityForResult(intent, RC_LEADERBOARD_UI)
                 }
@@ -120,5 +141,6 @@ class AndroidLauncher : AndroidApplication(), PlayServices {
 
     companion object {
         private const val RC_SIGN_IN = 9001
+        private const val RC_LEADERBOARD_UI = 9004
     }
 }
