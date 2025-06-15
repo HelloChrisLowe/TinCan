@@ -5,6 +5,7 @@ import io.chrislowe.tincan.objects.GameObject
 import io.chrislowe.tincan.objects.game.Can
 import io.chrislowe.tincan.objects.game.Spawner
 import io.chrislowe.tincan.objects.ui.*
+import io.chrislowe.tincan.TinCanGame.playServices
 import io.chrislowe.tincan.ui.SettingsManager
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -23,6 +24,7 @@ object Director {
 
     init {
         SettingsManager.initialize()
+        playServices.signIn()
         changeGameState(GameState.MENU)
     }
 
@@ -102,6 +104,7 @@ object Director {
 
         if (hasHighScore) {
             TinCanGame.storedData.submitHighScore(gameScore)
+            playServices.submitScore(gameScore)
         }
 
         gameObjects.addAll(listOf(GameOver(), EndMessage(hasHighScore)))

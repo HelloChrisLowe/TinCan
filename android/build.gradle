@@ -27,6 +27,11 @@ android {
         }
 
     }
+
+    dependencies {
+        implementation "com.google.android.gms:play-services-games-v2:+"
+    }
+
     packagingOptions {
         resources {
             excludes += ['META-INF/robovm/ios/robovm.xml']
@@ -43,10 +48,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "leaderboardKey", "\"${leaderboardKey}\""
+            buildConfigField "String", "leaderboardKey", "\"CgkI8qXD2_AdEAIQAQ\""
         }
         debug {
-            buildConfigField "String", "leaderboardKey", "\"${leaderboardKey}\""
+            buildConfigField "String", "leaderboardKey", "\"CgkI8qXD2_AdEAIQAQ\""
         }
     }
 }

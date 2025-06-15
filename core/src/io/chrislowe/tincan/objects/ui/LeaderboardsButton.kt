@@ -1,6 +1,7 @@
 package io.chrislowe.tincan.objects.ui
 
 import io.chrislowe.tincan.TinCanGame
+import io.chrislowe.tincan.TinCanGame.playServices
 import io.chrislowe.tincan.objects.GameObject
 
 class LeaderboardsButton : GameObject() {
@@ -12,6 +13,6 @@ class LeaderboardsButton : GameObject() {
     }
 
     override fun touch(touchX: Float, touchY: Float) {
-
+        playServices.showLeaderboard()
     }
 }

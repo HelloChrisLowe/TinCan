@@ -8,13 +8,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
-class TinCanGame(platformStoredData: StoredData) : ApplicationAdapter() {
+class TinCanGame(platformStoredData: StoredData, platformPlayServices: PlayServices) : ApplicationAdapter() {
     companion object {
         const val FPS = 60
         const val GAME_WIDTH = 720f
         const val GAME_HEIGHT = 1280f
         lateinit var storedData: StoredData
         lateinit var textFont: BitmapFont
+        lateinit var playServices: PlayServices
     }
 
     private lateinit var camera: OrthographicCamera
@@ -25,6 +26,7 @@ class TinCanGame(platformStoredData: StoredData) : ApplicationAdapter() {
 
     init {
         storedData = platformStoredData
+        playServices = platformPlayServices
     }
 
     override fun create() {
