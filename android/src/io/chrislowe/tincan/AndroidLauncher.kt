@@ -13,7 +13,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.games.GamesSignInClient
 import com.google.android.gms.games.PlayGames
-import com.google.android.gms.games.leaderboard.LeaderboardsClient
+import com.google.android.gms.games.LeaderboardsClient
+import com.google.android.gms.games.PlayGamesSdk
 import io.chrislowe.tincan.PlayServices
 
 class AndroidLauncher : AndroidApplication(), PlayServices {
@@ -23,7 +24,7 @@ class AndroidLauncher : AndroidApplication(), PlayServices {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        PlayGames.initialize(this)
+        PlayGamesSdk.initialize(this)
 
         // Clients are no longer stored in member variables here.
         // They will be fetched from PlayGames.* directly when needed.
@@ -39,12 +40,12 @@ class AndroidLauncher : AndroidApplication(), PlayServices {
 
     override fun signIn() {
         PlayGames.getGamesSignInClient(this).isAuthenticated.addOnCompleteListener { isAuthenticatedTask ->
-            val isAuthenticated = isAuthenticatedTask.isSuccessful && isAuthenticatedTask.result.isSignedIn
+            val isAuthenticated = isAuthenticatedTask.isSuccessful && isAuthenticatedTask.result.isAuthenticated
             if (isAuthenticated) {
                 Log.d("PlayServices", "Already signed in or auto-signed in")
                 // Check if silent sign-in was successful, otherwise prompt interactive sign-in
-                 PlayGames.getGamesSignInClient(this).signInSilently().addOnCompleteListener { silentSignInTask ->
-                    if (silentSignInTask.isSuccessful) {
+                 PlayGames.getGamesSignInClient(this).signIn().addOnCompleteListener { signInTask ->
+                    if (signInTask.isSuccessful) {
                         Log.d("PlayServices", "Silent sign-in successful.")
                     } else {
                         Log.d("PlayServices", "Silent sign-in failed, attempting interactive sign-in.")
@@ -56,6 +57,10 @@ class AndroidLauncher : AndroidApplication(), PlayServices {
                 interactiveSignIn()
             }
         }
+    }
+
+    override fun signOut() {
+        // TODO
     }
 
     private fun interactiveSignIn() {
@@ -76,7 +81,7 @@ class AndroidLauncher : AndroidApplication(), PlayServices {
                 task.getResult(ApiException::class.java)
                 // Signed in successfully via GoogleSignIn, now check Play Games layer
                 PlayGames.getGamesSignInClient(this).isAuthenticated.addOnCompleteListener { isAuthenticatedTask ->
-                    if (isAuthenticatedTask.isSuccessful && isAuthenticatedTask.result.isSignedIn) {
+                    if (isAuthenticatedTask.isSuccessful && isAuthenticatedTask.result.isAuthenticated) {
                         Log.d("PlayServices", "Google Sign-In successful and Play Games authenticated.")
                     } else {
                         Log.w("PlayServices", "Google Sign-In successful BUT Play Games NOT authenticated.")
@@ -89,22 +94,12 @@ class AndroidLauncher : AndroidApplication(), PlayServices {
         }
     }
 
-    override fun signOut() {
-        PlayGames.getGamesSignInClient(this).signOut().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Log.d("PlayServices", "Sign-out successful")
-            } else {
-                Log.e("PlayServices", "Sign-out failed: ", task.exception)
-            }
-        }
-    }
-
     override fun isSignedIn(): Boolean {
         // This is a synchronous check which might not be perfectly accurate immediately after an async call.
         // For v2, it's better to rely on the async results of isAuthenticated or signIn.
         // However, to satisfy the interface, we'll do our best.
         val authTask = PlayGames.getGamesSignInClient(this).isAuthenticated
-        return authTask.isComplete && authTask.isSuccessful && authTask.result.isSignedIn
+        return authTask.isComplete && authTask.isSuccessful && authTask.result.isAuthenticated
     }
 
     override fun submitScore(score: Int) {

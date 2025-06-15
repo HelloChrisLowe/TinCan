@@ -5,7 +5,6 @@ import io.chrislowe.tincan.objects.GameObject
 import io.chrislowe.tincan.objects.game.Can
 import io.chrislowe.tincan.objects.game.Spawner
 import io.chrislowe.tincan.objects.ui.*
-import io.chrislowe.tincan.TinCanGame // Changed import
 import io.chrislowe.tincan.ui.SettingsManager
 import java.util.concurrent.CopyOnWriteArrayList
 
