@@ -42,9 +42,9 @@ object Director {
         }
     }
 
-    fun updateGameObjects() {
+    fun updateGameObjects(delta: Float) {
         for (gameObject in gameObjects) {
-            gameObject.update()
+            gameObject.update(delta)
         }
     }
 
@@ -80,7 +80,7 @@ object Director {
         hasHighScore = false
 
         val startCan = gameObjects.find { it is StartCan }!!
-        val can = Can()
+        val can = Can.pool.obtain()
         can.jumpToObject(startCan)
 
         gameObjects.clear()

@@ -1,22 +1,26 @@
 package io.chrislowe.tincan
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 object GameBackground {
     private const val ZERO_OFFSET = 0f
 
-    private val whiteBackground = Texture(Gdx.files.internal("white.png"))
-    private val starBackground = Texture(Gdx.files.internal("stars.png"))
+    private lateinit var whiteBackground: Texture
+    private lateinit var starBackground: Texture
 
-    var blindTimer = 0
-    var shakeTimer = 0
+    fun init() {
+        whiteBackground = TextureCache.get("white.png")
+        starBackground = TextureCache.get("stars.png")
+    }
 
-    fun drawBackground(batch: SpriteBatch) {
+    var blindTimer = 0f
+    var shakeTimer = 0f
+
+    fun drawBackground(batch: SpriteBatch, delta: Float) {
         when {
-            blindTimer > 0 -> {drawWhiteBackground(batch); blindTimer--}
-            shakeTimer > 0 -> {drawShakingBackground(batch); shakeTimer--}
+            blindTimer > 0f -> {drawWhiteBackground(batch); blindTimer -= delta}
+            shakeTimer > 0f -> {drawShakingBackground(batch); shakeTimer -= delta}
             else -> drawNormalBackground(batch)
         }
     }

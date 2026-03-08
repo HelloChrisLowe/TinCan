@@ -22,15 +22,15 @@ class PlusScore(bonus: Int) : GameObject() {
         label.setSize(TinCanGame.GAME_WIDTH, label.height)
         label.setPosition(xOffset, yOffset)
 
-        ticksUntilDestruction = 30
+        secondsUntilDestruction = 30f / TinCanGame.FPS
 
         Director.increaseScore(bonus)
     }
 
-    override fun update() {
-        super.update()
+    override fun update(delta: Float) {
+        super.update(delta)
 
-        label.y += 50f / TinCanGame.FPS
+        label.y += 50f * delta
     }
 
     override fun draw(batch: SpriteBatch) {

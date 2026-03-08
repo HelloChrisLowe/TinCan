@@ -8,8 +8,9 @@ import io.chrislowe.tincan.plusOrMinus
 
 class GameOver : GameObject() {
     private val shakeScale = 16
+    private val shakeDuration = 12f / TinCanGame.FPS
 
-    private var selfShakeTimer = 12
+    private var selfShakeTimer = shakeDuration
 
     init {
         GameBackground.shakeTimer = selfShakeTimer
@@ -20,19 +21,19 @@ class GameOver : GameObject() {
         selfCenter()
     }
 
-    override fun update() {
-        if (selfShakeTimer > 0) {
-            selfShakeTimer--
+    override fun update(delta: Float) {
+        if (selfShakeTimer > 0f) {
+            selfShakeTimer -= delta
             selfCenter()
 
-            if (selfShakeTimer != 0) {
+            if (selfShakeTimer > 0f) {
                 sprite.x += 0.plusOrMinus(shakeScale)
                 sprite.y += 0.plusOrMinus(shakeScale)
             }
         }
     }
 
-    override fun isTouched(touchX: Float, touchY: Float) = (selfShakeTimer == 0)
+    override fun isTouched(touchX: Float, touchY: Float) = (selfShakeTimer <= 0f)
 
     override fun touch(touchX: Float, touchY: Float) =
             Director.changeGameState(Director.GameState.MENU)

@@ -13,32 +13,35 @@ class Spawner : GameObject() {
     private val verticalRange = TinCanGame.GAME_HEIGHT / 6
     private val horizontalRange = TinCanGame.GAME_WIDTH / 6
 
-    private val upperBoundTicks = 180
-    private val lowerBoundTicks = 60
+    private val upperBoundSeconds = 180f / TinCanGame.FPS
+    private val lowerBoundSeconds = 60f / TinCanGame.FPS
 
-    private val upperBoundRange = 60
-    private val lowerBoundRange = 30
+    private val upperBoundRange = 60f / TinCanGame.FPS
+    private val lowerBoundRange = 30f / TinCanGame.FPS
 
-    private var minSpawnTicks = upperBoundTicks
+    private val decreasePerSpawnMin = 5f / TinCanGame.FPS
+    private val decreasePerSpawnRange = 3f / TinCanGame.FPS
+
+    private var minSpawnSeconds = upperBoundSeconds
     private var spawnRange = upperBoundRange
     private var spawnPhase = SpawnPhase.SINGLE
 
-    private var spawnTicks = minSpawnTicks + spawnRange
+    private var spawnTimer = minSpawnSeconds + spawnRange
     private var spawnCount = 0
 
-    override fun update() {
-        spawnTicks--
+    override fun update(delta: Float) {
+        spawnTimer -= delta
 
-        if (spawnTicks == 0) {
+        if (spawnTimer <= 0f) {
             spawnCans()
 
-            if (minSpawnTicks > lowerBoundTicks) minSpawnTicks -= 5
-            if (spawnRange > lowerBoundRange) spawnRange -= 3
+            if (minSpawnSeconds > lowerBoundSeconds) minSpawnSeconds -= decreasePerSpawnMin
+            if (spawnRange > lowerBoundRange) spawnRange -= decreasePerSpawnRange
 
             if (spawnCount == SpawnPhase.DOUBLE.startsAt) changePhase(SpawnPhase.DOUBLE)
             if (spawnCount == SpawnPhase.TRIPLE.startsAt) changePhase(SpawnPhase.TRIPLE)
 
-            spawnTicks = minSpawnTicks + GameRandom.nextInt(spawnRange)
+            spawnTimer = minSpawnSeconds + GameRandom.nextFloat(0f, spawnRange)
         }
     }
 
@@ -55,12 +58,12 @@ class Spawner : GameObject() {
     private fun changePhase(newPhase: SpawnPhase) {
         spawnPhase = newPhase
 
-        minSpawnTicks = upperBoundTicks
+        minSpawnSeconds = upperBoundSeconds
         spawnRange = upperBoundRange
     }
 
     private fun spawnRightCan() {
-        val can = Can()
+        val can = Can.pool.obtain()
         can.sprite.x = TinCanGame.GAME_WIDTH
         can.sprite.y = (TinCanGame.GAME_HEIGHT / 2).plusOrMinus(verticalRange)
         can.xVel = (-800f).plusOrMinus(150f)
@@ -69,7 +72,7 @@ class Spawner : GameObject() {
     }
 
     private fun spawnLeftCan() {
-        val can = Can()
+        val can = Can.pool.obtain()
         can.sprite.x = -can.sprite.width
         can.sprite.y = (TinCanGame.GAME_HEIGHT / 2).plusOrMinus(verticalRange)
         can.xVel = 800f.plusOrMinus(150f)
@@ -78,7 +81,7 @@ class Spawner : GameObject() {
     }
 
     private fun spawnUpperCan() {
-        val can = Can()
+        val can = Can.pool.obtain()
         can.sprite.x = (TinCanGame.GAME_WIDTH / 2).plusOrMinus(horizontalRange)
         can.sprite.y = TinCanGame.GAME_HEIGHT + can.sprite.height
         can.xVel = 0f

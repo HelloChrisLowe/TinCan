@@ -10,8 +10,8 @@ class TutorialIcon(private val parent: GameObject) : GameObject() {
         else setTexture("taphere.png")
     }
 
-    override fun update() {
-        super.update()
+    override fun update(delta: Float) {
+        super.update(delta)
 
         jumpToObject(parent)
         sprite.x += 70

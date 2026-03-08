@@ -1,12 +1,11 @@
 package io.chrislowe.tincan.objects.ui
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import io.chrislowe.tincan.Audio
+import io.chrislowe.tincan.TextureCache
 import io.chrislowe.tincan.TinCanGame
 import io.chrislowe.tincan.objects.GameObject
 import io.chrislowe.tincan.ui.SettingsManager
@@ -24,7 +23,7 @@ class MenuButton(
     buttonText: String
 ) : GameObject() {
 
-    private val whitePixelTexture = Texture(Gdx.files.internal("white.png"))
+    private val whitePixelTexture = TextureCache.get("white.png")
     private val blackTextStyle = Label.LabelStyle(TinCanGame.textFont, Color.BLACK)
     private val label: Label
     private var buttonWidth = 80f

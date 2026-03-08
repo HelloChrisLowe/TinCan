@@ -9,7 +9,7 @@ import kotlin.math.sin
 class StartCan : GameObject() {
     private val bobAmount = 64
 
-    private var ticksAlive = 0
+    private var timeAlive = 0f
 
     init {
         setTexture("can0.png")
@@ -18,14 +18,13 @@ class StartCan : GameObject() {
         sprite.y = TinCanGame.GAME_HEIGHT / 2f
     }
 
-    override fun update() {
-        super.update()
+    override fun update(delta: Float) {
+        super.update(delta)
 
-        ticksAlive++
+        timeAlive += delta
 
         val screenMiddle = TinCanGame.GAME_WIDTH / 2f - sprite.width / 2f
-        val fps = TinCanGame.FPS.toFloat()
-        val sinePosition = sin(Math.PI * (ticksAlive / fps)).toFloat()
+        val sinePosition = sin(Math.PI * timeAlive.toDouble()).toFloat()
 
         sprite.x = screenMiddle + sinePosition * bobAmount
     }

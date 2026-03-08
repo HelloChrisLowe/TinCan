@@ -9,6 +9,12 @@ import io.chrislowe.tincan.objects.GameObject
 import io.chrislowe.tincan.objects.ui.PlusScore
 
 class Can : GameObject(), Pool.Poolable {
+    companion object {
+        val pool: Pool<Can> = object : Pool<Can>() {
+            override fun newObject(): Can = Can()
+        }
+    }
+
     private val particleCount = 3
 
     private var damage = 0
@@ -22,6 +28,9 @@ class Can : GameObject(), Pool.Poolable {
         sprite.rotation = 0f
         rotationVel = 0f
         gravity = -900f
+        xVel = 0f
+        yVel = 0f
+        secondsUntilDestruction = -1f
 
         damage = 0
 
@@ -58,8 +67,8 @@ class Can : GameObject(), Pool.Poolable {
         rotationVel = ((-rotationVel * 20) + xVel) / 10
     }
 
-    override fun update() {
-        super.update()
+    override fun update(delta: Float) {
+        super.update(delta)
 
         if (rotationVel > 200f)
             rotationVel = 200f
@@ -87,7 +96,7 @@ class Can : GameObject(), Pool.Poolable {
     }
 
     override fun touch(touchX: Float, touchY: Float) {
-        GameBackground.shakeTimer = 6
+        GameBackground.shakeTimer = 6f / TinCanGame.FPS
 
         damage++
 
@@ -101,7 +110,7 @@ class Can : GameObject(), Pool.Poolable {
 
     fun destroy() {
         Audio.playSound(Audio.SoundTag.KILL)
-        GameBackground.blindTimer = 3
+        GameBackground.blindTimer = 3f / TinCanGame.FPS
 
         val newObjects = ArrayList<GameObject>(particleCount + 2)
         (1..particleCount).forEach { _ ->
@@ -120,7 +129,7 @@ class Can : GameObject(), Pool.Poolable {
         newObjects.add(plusScore)
 
         Director.gameObjects.addAll(newObjects)
-        Director.gameObjects.remove(this)
+        freeSelf()
     }
 
     private fun takeHit(hitX: Float, hitY: Float) {
@@ -140,5 +149,10 @@ class Can : GameObject(), Pool.Poolable {
         Director.gameObjects.addAll(newObjects)
 
         punchUp()
+    }
+
+    private fun freeSelf() {
+        Director.gameObjects.remove(this)
+        pool.free(this)
     }
 }
