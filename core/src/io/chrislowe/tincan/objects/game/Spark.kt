@@ -1,6 +1,7 @@
 package io.chrislowe.tincan.objects.game
 
 import io.chrislowe.tincan.GameRandom
+import io.chrislowe.tincan.TinCanGame
 import io.chrislowe.tincan.objects.GameObject
 import io.chrislowe.tincan.plusOrMinus
 
@@ -11,6 +12,6 @@ class Spark : GameObject() {
         xVel = 0f.plusOrMinus(2000f)
         yVel = 0f.plusOrMinus(2000f)
 
-        ticksUntilDestruction = 4
+        secondsUntilDestruction = 4f / TinCanGame.FPS
     }
 }

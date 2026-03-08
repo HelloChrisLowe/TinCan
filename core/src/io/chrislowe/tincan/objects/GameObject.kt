@@ -1,11 +1,10 @@
 package io.chrislowe.tincan.objects
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import io.chrislowe.tincan.Director
-import io.chrislowe.tincan.TinCanGame
+import io.chrislowe.tincan.TextureCache
 
 abstract class GameObject {
     companion object {
@@ -20,21 +19,19 @@ abstract class GameObject {
 
     var gravity = 0f
 
-    var ticksUntilDestruction = -1
+    var secondsUntilDestruction = -1f
 
-    open fun update() {
-        val fps = TinCanGame.FPS.toFloat()
+    open fun update(delta: Float) {
+        sprite.x += xVel * delta
+        sprite.y += yVel * delta
+        sprite.rotation += rotationVel * delta
 
-        sprite.x += xVel / fps
-        sprite.y += yVel / fps
-        sprite.rotation += rotationVel / fps
+        yVel += gravity * delta
 
-        yVel += gravity / fps
+        if (secondsUntilDestruction > 0f) {
+            secondsUntilDestruction -= delta
 
-        if (ticksUntilDestruction > 0) {
-            ticksUntilDestruction--
-
-            if (ticksUntilDestruction == 0) {
+            if (secondsUntilDestruction <= 0f) {
                 deleteSelf()
             }
         }
@@ -65,7 +62,7 @@ abstract class GameObject {
     }
 
     fun setTexture(filename: String) {
-        setTexture(Texture(Gdx.files.internal(filename)))
+        setTexture(TextureCache.get(filename))
     }
 
     private fun setTexture(texture: Texture) {

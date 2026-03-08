@@ -20,9 +20,6 @@ class TinCanGame(platformStoredData: StoredData) : ApplicationAdapter() {
     private lateinit var camera: OrthographicCamera
     private lateinit var batch: SpriteBatch
 
-    private val frameLifetime = 1000L / FPS
-    private var nextUpdate = 0L
-
     init {
         storedData = platformStoredData
     }
@@ -45,41 +42,34 @@ class TinCanGame(platformStoredData: StoredData) : ApplicationAdapter() {
                 val touchX = screenX * scaleX
                 val touchY = GAME_HEIGHT - (screenY * scaleY)
 
-                println("ScaleX: $scaleX, ScaleY: $scaleY")
-                println("TouchX: $touchX, TouchY: $touchY")
-
                 Director.handleTouchEvent(touchX, touchY)
                 return true
             }
         }
 
+        GameBackground.init()
         Audio.init()
     }
 
     override fun render() {
-        update()
+        val delta = Gdx.graphics.deltaTime
+
+        Director.updateGameObjects(delta)
+        Audio.updateAudio(delta)
 
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         batch.begin()
-        GameBackground.drawBackground(batch)
+        GameBackground.drawBackground(batch, delta)
         Director.drawGameObjects(batch)
         batch.end()
     }
 
-    @Suppress("NOTHING_TO_INLINE")
-    private inline fun update() {
-        val startTime = System.currentTimeMillis()
-        if (startTime >= nextUpdate) {
-            Director.updateGameObjects()
-            Audio.updateAudio()
-
-            nextUpdate = startTime + frameLifetime
-        }
-    }
-
     override fun dispose() {
         batch.dispose()
+        textFont.dispose()
+        Audio.dispose()
+        TextureCache.dispose()
     }
 }

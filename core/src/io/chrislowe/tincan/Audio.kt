@@ -70,8 +70,8 @@ object Audio {
         lastPlaying?.pause()
     }
 
-    fun updateAudio() {
-        crossFade -= CROSS_FADE_RATE
+    fun updateAudio(delta: Float) {
+        crossFade -= CROSS_FADE_RATE * delta * TinCanGame.FPS
         if (crossFade < 0f) crossFade = 0f
 
         val musicVol = TinCanGame.storedData.getMusicVolume() / 100f
@@ -95,13 +95,27 @@ object Audio {
         currentlyPlaying?.volume = musicVol
     }
 
+    fun dispose() {
+        for (sounds in soundBank.values) {
+            for (sound in sounds) {
+                sound.dispose()
+            }
+        }
+        soundBank.clear()
+
+        for (music in musicBank.values) {
+            music.dispose()
+        }
+        musicBank.clear()
+
+        currentlyPlaying = null
+        lastPlaying = null
+    }
+
     private fun addSound(tag: SoundTag, filename: String) {
         val file = Gdx.files.internal(filename)
         val sound = Gdx.audio.newSound(file)
-
-        val list = soundBank[tag] ?: mutableListOf()
-        list.add(sound)
-        soundBank[tag] = list
+        soundBank.getOrPut(tag) { mutableListOf() }.add(sound)
     }
 
     private fun addMusic(tag: MusicTag, filename: String) {

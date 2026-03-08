@@ -21,8 +21,8 @@ class Debris : GameObject() {
         gravity = -4000f
     }
 
-    override fun update() {
-        super.update()
+    override fun update(delta: Float) {
+        super.update(delta)
 
         if (sprite.y - sprite.height < 0) deleteSelf()
     }

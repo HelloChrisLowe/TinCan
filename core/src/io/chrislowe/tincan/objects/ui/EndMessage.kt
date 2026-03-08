@@ -7,7 +7,7 @@ import kotlin.math.sin
 class EndMessage(hasHighScore: Boolean) : GameObject() {
     private val bobAmount = 64
 
-    private var ticksAlive = 0
+    private var timeAlive = 0f
 
     init {
         val imageName = if (hasHighScore) "congrats.png" else "tryagain.png"
@@ -18,14 +18,13 @@ class EndMessage(hasHighScore: Boolean) : GameObject() {
         sprite.y = 2f * (TinCanGame.GAME_HEIGHT - sprite.height) / 3f
     }
 
-    override fun update() {
-        super.update()
+    override fun update(delta: Float) {
+        super.update(delta)
 
-        ticksAlive++
+        timeAlive += delta
 
         val screenMiddle = TinCanGame.GAME_HEIGHT / 3f
-        val fps = TinCanGame.FPS.toFloat()
-        val sinePosition = sin(Math.PI * (ticksAlive / fps)).toFloat()
+        val sinePosition = sin(Math.PI * timeAlive.toDouble()).toFloat()
 
         sprite.y = screenMiddle + sinePosition * bobAmount
     }
